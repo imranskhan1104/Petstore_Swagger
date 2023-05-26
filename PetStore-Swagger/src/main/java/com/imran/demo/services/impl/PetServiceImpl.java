@@ -7,6 +7,8 @@ import com.imran.demo.repositories.PetImageRepo;
 import com.imran.demo.repositories.PetRepo;
 import com.imran.demo.services.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -23,13 +25,16 @@ public class PetServiceImpl implements PetService {
     @Autowired
     private PetImageRepo petImageRepo;
 
+
     @Override
+    @Cacheable(value = "pets", key = "#petId")
     public PetDto getPetByID(Integer petId) {
         Pet pet =this.petRepo.findById(petId).orElseThrow(()-> new ResourceNotFoundException("Pet"," id ",petId));
         return this.petToDto(pet);
     }
 
     @Override
+    @CacheEvict(value = "pets", key = "#result.id")
     public PetDto addPet(PetDto petDto) {
         Pet pet=this.dtoToPet(petDto);
         Pet savedPet = this.petRepo.save(pet);
@@ -37,6 +42,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @CacheEvict(value = "pets", key = "#petId")
     public PetDto updatePet(PetDto petDto, Integer petId) {
         Pet pet =this.petRepo.findById(petId).orElseThrow(()-> new ResourceNotFoundException("Pet"," id ",petId));
         pet.setCategory(petDto.getCategory());
@@ -50,6 +56,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @CacheEvict(value = "pets", key = "#petId")
     public void updateWithFormData(Integer petId, String name, String status) {
         Pet pet =this.petRepo.findById(petId).orElseThrow(()-> new ResourceNotFoundException("Pet"," id ",petId));
 
@@ -59,12 +66,14 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @CacheEvict(value = "pets", key = "#petId")
     public void deletePet(Integer petId) {
         Pet pet=this.petRepo.findById(petId).orElseThrow(()-> new ResourceNotFoundException("Pet"," id ",petId));
         this.petRepo.delete(pet);
     }
 
     @Override
+    @CacheEvict(value = "pets", key = "#petId")
     public void uploadImage(MultipartFile file, Integer petId) throws IOException {
         PetImages pet=new PetImages();
         pet.setImage(file.getBytes());
@@ -74,6 +83,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Cacheable(value = "petsByStatus", key = "#status")
     public List<PetDto> getPetByStatus(String status) {
         List<Pet> petList = this.petRepo.findByStatus(status);
         List<PetDto> petDtoList = new ArrayList<>();

@@ -1,5 +1,4 @@
-package com.imran.demo.payloads;
-
+package com.imran.demo.payloads.table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoryDto implements Serializable {
-    private int cid;
-
-    private String name;
+public class SchemaVar implements Serializable {
+    private String columnName;
+    private String columnType;
 }

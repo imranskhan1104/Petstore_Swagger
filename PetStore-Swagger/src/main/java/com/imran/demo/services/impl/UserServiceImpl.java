@@ -5,6 +5,8 @@ import com.imran.demo.payloads.UserDto;
 import com.imran.demo.repositories.UserRepo;
 import com.imran.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public UserDto createUser(UserDto userDto) {
         User user = this.dtoToUser(userDto);
         User savedUser = this.userRepo.save(user);
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users", key = "#userName")
     public UserDto updateUser(UserDto userDto, String userName) {
         User user = this.userRepo.findByUserName(userName);
         user.setFirstName(userDto.getFirstName());
@@ -38,12 +42,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users", key = "#userName")
     public UserDto getUserByUserName(String userName) {
         User user = this.userRepo.findByUserName(userName);
         return this.userToDto(user);
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public boolean createUserByArray(UserDto[] userDto) {
         boolean flag = false;
         try {
@@ -67,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users", allEntries = true)
     public boolean createUserByList(List<UserDto> listOfUser) {
         boolean flag = false;
         try {
@@ -90,6 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "users", key = "#userName")
     public void deleteUser(String userName) {
         this.userRepo.deleteByUsername(userName);
     }

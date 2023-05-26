@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDto {
+public class UserDto implements Serializable {
     private int id;
     private String userName;
     private String firstName;

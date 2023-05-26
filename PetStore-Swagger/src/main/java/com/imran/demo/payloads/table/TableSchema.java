@@ -1,5 +1,4 @@
-package com.imran.demo.payloads;
-
+package com.imran.demo.payloads.table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,13 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoryDto implements Serializable {
-    private int cid;
-
-    private String name;
+public class TableSchema implements Serializable {
+    private List<SchemaVar> schemaVar;
 }

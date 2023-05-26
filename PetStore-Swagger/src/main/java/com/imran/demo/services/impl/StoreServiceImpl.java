@@ -6,6 +6,9 @@ import com.imran.demo.payloads.StoreDto;
 import com.imran.demo.repositories.StoreRepo;
 import com.imran.demo.services.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -13,12 +16,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@CacheConfig(cacheNames = {"Order"})
 public class StoreServiceImpl implements StoreService {
 
     @Autowired
     private StoreRepo storeRepo;
 
     @Override
+    @CacheEvict(key = "#storeDto.id", value = "Order")
     public StoreDto placeOrder(StoreDto storeDto) {
         Store store=this.dtoToStore(storeDto);
         Store placeOrder=this.storeRepo.save(store);
@@ -26,18 +31,21 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @CacheEvict(key = "#orderId",value = "Order")
     public void deleteOrder(int orderId) {
         Store store=this.storeRepo.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Order"," id ",orderId));
         this.storeRepo.delete(store);
     }
 
     @Override
+    @Cacheable(key="#orderId",value = "Order")
     public StoreDto findOrderById(int orderId) {
         Store store=this.storeRepo.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Order"," id ",orderId));
         return this.storeToDto(store);
     }
 
     @Override
+    @Cacheable(value = "Order")
     public HashMap<String, Integer> countByStatus() {
         List<Object[]> statusCounts = this.storeRepo.countByStatus();
         HashMap<String, Integer> statusCountsMap = new HashMap<>();

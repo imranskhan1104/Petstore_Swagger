@@ -1,5 +1,4 @@
-package com.imran.demo.payloads;
-
+package com.imran.demo.payloads.dataset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +11,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoryDto implements Serializable {
-    private int cid;
+public class DatasetIdDTO implements Serializable {
+    private String dataset;
+    private String project;
+    private String projectId;
 
-    private String name;
 }
